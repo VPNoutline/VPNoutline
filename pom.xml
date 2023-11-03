@@ -11,7 +11,7 @@
     <groupId>ru.demidov</groupId>
     <artifactId>VPNoutline</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>VPN-outline</name>
+    <name>VPNoutline</name>
     <description>VPNoutline</description>
     <properties>
         <java.version>17</java.version>

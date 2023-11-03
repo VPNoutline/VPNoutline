@@ -12,5 +12,5 @@ spring:
       ddl-auto: validate
 
   liquibase:
-    changeLog: "classpath:db/changelog.sql"
+    changeLog: "classpath:db/vpn_script.sql"
     enabled: true
