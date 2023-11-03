@@ -1,8 +1,8 @@
 --liquibase formatted sql
 
 --init_schema
-drop table if exists keys_vpn;
 drop table if exists users;
+drop table if exists keys_vpn;
 drop table if exists roles;
 drop table if exists mails_case;
 drop table if exists subscriptions;
@@ -10,32 +10,30 @@ drop table if exists user_subscriptions;
 drop table if exists notifications;
 
 
---table: keys_vpn
-create table keys_vpn (
-    id         bigserial primary key not null ,
-    key_access varchar (128) not null unique
-);
 
 --table: users
 create table users (
     id          bigserial primary key ,
-    role_id     bigint not null ,
-    keys_vpn_id bigserial not null ,
     email       varchar(255) not null
         constraint uk_users_email unique,
     enabled     boolean not null default false ,
     created     timestamp ,
-    updated     timestamp ,
-      --constraint fk_role_id foreign key (role_id) references roles (user_id),
-        constraint fk_keys_vpn_id foreign key (keys_vpn_id) references keys_vpn (id)
+    updated     timestamp
+);
+
+--table: keys_vpn
+create table keys_vpn (
+    id         bigserial primary key not null ,
+    key_access varchar (128) not null unique ,
+        constraint fk_keys_vpn_id foreign key (id) references users (id) on delete cascade
 );
 
 --table: roles
 create table roles (
     user_id bigint not null ,
     role    smallint not null ,
-        constraint uk_user_role unique (user_id, role)
-        --constraint fk_user_role foreign key (user_id) references users (id) on delete cascade
+        constraint uk_user_role unique (user_id, role) ,
+        constraint fk_user_role foreign key (user_id) references users (id) on delete cascade
 );
 
 --table: mails_case
@@ -58,8 +56,8 @@ create table user_subscriptions (
     id               bigserial primary key not null ,
     user_id          bigserial not null ,
     subscriptions_id bigserial not null ,
-        constraint fk_user_id foreign key (user_id) references users (id) ,
-        constraint fk_subscriptions_id foreign key (subscriptions_id) references subscriptions (id)
+        constraint fk_user_id foreign key (user_id) references users (id) on delete cascade ,
+        constraint fk_subscriptions_id foreign key (subscriptions_id) references subscriptions (id) on delete cascade
 );
 
 --table: notifications
@@ -70,13 +68,13 @@ create table notifications (
 );
 
 
+--insert data users
+insert into users (id, email, enabled)
+values (1,'demidov-denis@mail.ru', false);
+
 --insert data keys_vpn
 insert into keys_vpn (id, key_access)
 values (1,'1a2b3c4d');
-
---insert data users
-insert into users (id, role_id, keys_vpn_id, email, enabled)
-values (1,1,1,'demidov-denis@mail.ru', false);
 
 --insert data roles
 insert into roles (user_id, role) values (1,0);
