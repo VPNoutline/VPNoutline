@@ -5,6 +5,7 @@ drop table if exists users;
 drop table if exists keys_vpn;
 drop table if exists roles;
 drop table if exists mails_case;
+drop table if exists rates;
 drop table if exists subscriptions;
 drop table if exists user_subscriptions;
 drop table if exists notifications;
@@ -13,12 +14,9 @@ drop table if exists notifications;
 
 --table: users
 create table users (
-    id          bigserial primary key ,
+    id          bigserial primary key not null ,
     email       varchar(255) not null
-        constraint uk_users_email unique,
-    enabled     boolean not null default false ,
-    created     timestamp ,
-    updated     timestamp
+        constraint uk_users_email unique
 );
 
 --table: keys_vpn
@@ -40,15 +38,27 @@ create table roles (
 create table mails_case (
     id        bigserial primary key ,
     email     varchar (255) not null ,
-    date_time timestamp not null ,
-    template  varchar (255) not null
+    date_time timestamp not null
+);
+
+--table: rates
+create table rates (
+    id          bigserial primary key ,
+    name_rates  varchar (255) not null unique ,
+    description varchar (255) not null ,
+    price       integer not null
 );
 
 --table: subscriptions
 create table subscriptions (
-    id          bigserial primary key ,
-    name        varchar (255) not null unique ,
-    description varchar (255) not null
+    id                     bigserial primary key not null ,
+    enabled_start_rate     boolean not null default false ,
+    enabled_rate           boolean not null default false ,
+    created                timestamp not null ,
+    updated                timestamp ,
+    finished               timestamp not null ,
+    rates_id               bigserial not null ,
+        constraint fk_rates_id foreign key (rates_id) references rates (id) on delete cascade
 );
 
 --table: user_subscriptions
@@ -69,8 +79,8 @@ create table notifications (
 
 
 --insert data users
-insert into users (id, email, enabled)
-values (1,'demidov-denis@mail.ru', false);
+insert into users (id, email)
+values (1,'demidov-denis@mail.ru');
 
 --insert data keys_vpn
 insert into keys_vpn (id, key_access)
@@ -78,16 +88,19 @@ values (1,'1a2b3c4d');
 
 --insert data roles
 insert into roles (user_id, role) values (1,0);
---insert into roles (user_id, role) values (2,1);
 
 --insert data mails_case
-insert into mails_case (email, date_time, template)
-values ('demidov-denis@mail.ru','2023-11-03 20:00:10','template_mail');
+insert into mails_case (email, date_time)
+values ('demidov-denis@mail.ru','2023-11-03 20:00:10');
+
+--insert data rates
+insert into rates (name_rates, description, price) values ('start', '7 days', 0);
+insert into rates (name_rates, description, price) values ('basic', 'mount', 299);
+insert into rates (name_rates, description, price) values ('special offer', 'year', 1999);
 
 --insert data subscriptions
-insert into subscriptions (id, name, description) values  (1, 'start', '3 days');
-insert into subscriptions (id, name, description) values  (2, 'basic', 'mount');
-insert into subscriptions (id, name, description) values  (3, 'special offer', 'year');
+insert into subscriptions (id, enabled_start_rate, enabled_rate, created, finished, rates_id)
+values  (1, true, false, '2023-11-03 20:00:00', '2023-11-10 20:00:00', 1);
 
 --insert data user_subscriptions
 insert into user_subscriptions (id, user_id, subscriptions_id)
