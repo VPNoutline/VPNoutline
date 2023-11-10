@@ -40,4 +40,11 @@ public class User {
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_subscriptions",
+                joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+                inverseJoinColumns = @JoinColumn(name = "subscription_id", referencedColumnName = "id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Subscription> subscriptions;
 }

@@ -8,27 +8,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table (name = "rates")
+@Table(name = "rates")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Rate {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Column (name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column (name = "name_rates", nullable = false, unique = true)
+    @Column(name = "name_rates", nullable = false, unique = true)
     @Size(max = 255)
     @NotNull
     private String nameRate;
 
-    @Column (name = "description", nullable = false, updatable = false)
-    @Size (max = 255)
+    @Column(name = "description", nullable = false, updatable = false)
+    @Size(max = 255)
     @NotNull
     private String description;
 
-    @Column (name = "price")
+    @Column(name = "price")
     @NotNull
     private Integer price;
 }

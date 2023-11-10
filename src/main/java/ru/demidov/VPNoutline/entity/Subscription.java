@@ -2,6 +2,7 @@ package ru.demidov.VPNoutline.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,23 +12,29 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
-@Table (name = "subscriptions")
+@Table(name = "subscriptions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Subscription {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Column (name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    @Column (name = "enabled_start_rate")
+    @Column(name = "key_access", nullable = false, unique = true)
+    @Size(max = 255)
+    @NotNull
+    private String keyAccess;
+
+    @Column(name = "enabled_start_rate")
     @NotNull
     private boolean enabledStartRate;
 
-    @Column (name = "enabled_rate")
+    @Column(name = "enabled_rate")
     @NotNull
     private boolean enabledRate;
 
@@ -49,4 +56,8 @@ public class Subscription {
     @JoinColumn(name = "rates_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Rate rates;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "subscriptions")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<User> users;
 }
