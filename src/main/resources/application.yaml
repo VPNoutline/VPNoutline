@@ -14,3 +14,9 @@ spring:
   liquibase:
     changeLog: "classpath:db/vpn_script.sql"
     enabled: true
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
