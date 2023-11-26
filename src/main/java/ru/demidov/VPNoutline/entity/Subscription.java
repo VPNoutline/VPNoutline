@@ -1,24 +1,24 @@
 package ru.demidov.VPNoutline.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "subscriptions")
-@Data
+@Setter
+@Getter
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Subscription implements Serializable {
@@ -33,37 +33,24 @@ public class Subscription implements Serializable {
 
     @Column(name = "key_access", nullable = false, unique = true)
     @Size(max = 255)
-    @NotNull
     private String keyAccess;
 
-    @Column(name = "enabled_start_rate")
-    @NotNull
-    private boolean enabledStartRate;
-
-    @Column(name = "enabled_rate")
-    @NotNull
+    @Column(name = "enabled_rate", nullable = false)
     private boolean enabledRate;
 
     @CreationTimestamp
     @Column(name = "created", nullable = false)
-    @NotNull
     private LocalDateTime created;
 
-    @UpdateTimestamp
-    @Column(name = "updated", nullable = false)
-    @NotNull
-    private LocalDateTime updated;
-
     @Column(name = "finished", nullable = false)
-    @NotNull
     private LocalDateTime finished;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "rates_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Rate rates;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "subscriptions")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "subscription", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<User> users;
+    private List<User> users = new ArrayList<>();
 }

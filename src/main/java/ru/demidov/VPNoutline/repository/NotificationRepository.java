@@ -6,4 +6,5 @@ import ru.demidov.VPNoutline.entity.Notification;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
+
 }

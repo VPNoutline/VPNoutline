@@ -1,46 +1,38 @@
 package ru.demidov.VPNoutline.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import jakarta.validation.constraints.NotNull;
+import ru.demidov.VPNoutline.entity.Subscription;
 import ru.demidov.VPNoutline.entity.User;
-import ru.demidov.VPNoutline.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-@Transactional(readOnly = true)
-public class UserService {
+public interface UserService {
 
-    private final UserRepository userRepository;
+    @NotNull
+    List<User> findAll();
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @NotNull
+    User findById(@NotNull Long userId);
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
+    @NotNull
+    User findByEmail(@NotNull String email);
 
-    public User findOne(long id){
-        Optional<User> foundUser = userRepository.findById(id);
-        return foundUser.orElse(null);
-    }
+    String findNameRateByEmail(String email);
 
-    @Transactional
-    public void save(User user){
-        userRepository.save(user);
-    }
+    Subscription findSubscriptionByEmail(String email);
 
-    @Transactional
-    public void update(long id, User updatedUser){
-        updatedUser.setId(id);
-        userRepository.save(updatedUser);
-    }
-    @Transactional
-    public void delete(long id){
-        userRepository.deleteById(id);
-    }
+    boolean findEnabledRateByEmail(String email);
+
+    @NotNull
+    void createStartUser(@NotNull String email, @NotNull String rateRequest);
+
+    @NotNull
+    void createBasicUser(@NotNull String email, @NotNull String rateRequest);
+
+    @NotNull
+    void createSpecialOfferUser(@NotNull String email, @NotNull String rateRequest);
+
+    void updateUser(@NotNull String email, @NotNull String rateRequest);
+
+    void delete(@NotNull Long userId);
 }
