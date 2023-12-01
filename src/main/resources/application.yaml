@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vpnoutline_db
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+    open-in-view: false
+
+    # validate db by model
+    hibernate:
+      ddl-auto: validate
+
+  liquibase:
+    changeLog: "classpath:db/vpn_script.sql"
+    enabled: true
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+
+#  jackson:
+#    visibility:
+#      field: any
+#      getter: none
+#      setter: none
+#      is-getter: none
